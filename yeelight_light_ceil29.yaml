@@ -1,5 +1,5 @@
 substitutions:
-  name: yeelight-light-ceil26
+  name: yeelight-light-ceil29
 
 esphome:
   name: ${name}
@@ -26,23 +26,20 @@ logger:
 
 api:
 
-sensor:
-  - platform: adc
-    pin: GPIO35
-    name: "${name} power supply"
-    attenuation: 12db
-
 output:
   - platform: ledc
     pin: GPIO19
     id: output_warm
     power_supply: power
-    # limit of the stock firmware (1.5V)
+#    min_power: 0.13
     max_power: 0.50
   - platform: ledc
     pin: GPIO21
     id: output_cold
     power_supply: power
+#    min_power: 0.13
+    max_power: 0.96
+
   - platform: ledc
     pin: GPIO23
     id: output_nightlight
@@ -52,7 +49,7 @@ power_supply:
   - id: power
     pin: GPIO22
     enable_time: 0s
-    keep_on_time: 2s
+    keep_on_time: 0s
 
 light:
   - platform: monochromatic

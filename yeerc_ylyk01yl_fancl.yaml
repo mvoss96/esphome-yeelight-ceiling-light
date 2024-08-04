@@ -1,5 +1,5 @@
 substitutions:
-  name: yeerc
+  name: yeerc-fancl
   external_components_source: github://syssi/esphome-yeelight-ceiling-light@main
 
 esphome:
@@ -44,32 +44,32 @@ xiaomi_ylyk01yl:
   last_button_pressed:
     name: "last button pressed"
 
-  # Button  Keycode (YLYK01YL Ceiling Lamp)
-  # on      0
-  # off     1
-  # sun     2
-  # +       3
-  # m       4
-  # -       5
+  # Button             Keycode (YLYK01YL Ceiling Fan)
+  # fan toggle         0
+  # light toggle       1
+  # wind speed         2
+  # color temperature  3
+  # wind mode          4
+  # brightness         5
   on_press:
     - keycode: 0
       then:
-        - logger.log: "Button on pressed"
+        - logger.log: "Button fan toggle pressed"
     - keycode: 1
       then:
-        - logger.log: "Button off pressed"
+        - logger.log: "Button light toggle pressed"
     - keycode: 2
       then:
-        - logger.log: "Button sun pressed"
+        - logger.log: "Button wind speed pressed"
     - keycode: 3
       then:
-        - logger.log: "Button + pressed"
+        - logger.log: "Button color temperature pressed"
     - keycode: 4
       then:
-        - logger.log: "Button m pressed"
+        - logger.log: "Button wind mode pressed"
     - keycode: 5
       then:
-        - logger.log: "Button - pressed"
+        - logger.log: "Button brightness pressed"
 
     # Trigger on any keycode
     - then:
@@ -80,22 +80,22 @@ xiaomi_ylyk01yl:
   on_long_press:
     - keycode: 0
       then:
-        - logger.log: "Button on long pressed"
+        - logger.log: "Button fan toggle long pressed"
     - keycode: 1
       then:
-        - logger.log: "Button off long pressed"
+        - logger.log: "Button light toggle long pressed"
     - keycode: 2
       then:
-        - logger.log: "Button sun long pressed"
+        - logger.log: "Button wind speed long pressed"
     - keycode: 3
       then:
-        - logger.log: "Button + long pressed"
+        - logger.log: "Button color temperature long pressed"
     - keycode: 4
       then:
-        - logger.log: "Button m long pressed"
+        - logger.log: "Button wind mode long pressed"
     - keycode: 5
       then:
-        - logger.log: "Button - long pressed"
+        - logger.log: "Button brightness long pressed"
 
     # Trigger on any keycode
     - then:

@@ -93,6 +93,11 @@ bool parse_xiaomi_message(const std::vector<uint8_t> &message, XiaomiParseResult
     return false;
   }
 
+  if ((message[1] >> 1) & 1) {
+    ESP_LOGVV(TAG, "parse_xiaomi_message(): Discard register and bind request.");
+    return false;
+  }
+
   // Data point specs
   // Byte 0: type
   // Byte 1: fixed 0x10
@@ -218,6 +223,9 @@ optional<XiaomiParseResult> parse_xiaomi_header(const esp32_ble_tracker::Service
   } else if ((raw[2] == 0xB6) && (raw[3] == 0x03)) {  // Yeelight Wireless Smart Dimmer YLKG07YL/YLKG08YL
     result.type = XiaomiParseResult::TYPE_YLKG07YL;
     result.name = "YLKG07YL";
+  } else if ((raw[2] == 0x8e) && (raw[3] == 0x06)) {  // Yeelight Remote Control YLYK01YL Ceiling Fan
+    result.type = XiaomiParseResult::TYPE_YLYK01YL_FANCL;
+    result.name = "YLYK01YL-FANCL";
   } else {
     ESP_LOGVV(TAG, "parse_xiaomi_header(): unknown device, no magic bytes.");
     return {};
@@ -235,12 +243,12 @@ bool decrypt_xiaomi_payload(std::vector<uint8_t> &raw, const uint8_t *bindkey, c
   }
 
   uint8_t mac_reverse[6] = {0};
-  mac_reverse[5] = (uint8_t)(address >> 40);
-  mac_reverse[4] = (uint8_t)(address >> 32);
-  mac_reverse[3] = (uint8_t)(address >> 24);
-  mac_reverse[2] = (uint8_t)(address >> 16);
-  mac_reverse[1] = (uint8_t)(address >> 8);
-  mac_reverse[0] = (uint8_t)(address >> 0);
+  mac_reverse[5] = (uint8_t) (address >> 40);
+  mac_reverse[4] = (uint8_t) (address >> 32);
+  mac_reverse[3] = (uint8_t) (address >> 24);
+  mac_reverse[2] = (uint8_t) (address >> 16);
+  mac_reverse[1] = (uint8_t) (address >> 8);
+  mac_reverse[0] = (uint8_t) (address >> 0);
 
   XiaomiAESVector vector{.key = {0},
                          .plaintext = {0},

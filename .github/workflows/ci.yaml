@@ -9,6 +9,9 @@ on:  # yamllint disable-line rule:truthy
     # Once per week on wednesday
     - cron: 0 12 * * 3
 
+env:
+  FORCE_COLOR: 1
+
 jobs:
   yamllint:
     runs-on: ubuntu-latest
@@ -23,13 +26,19 @@ jobs:
     env:
       esphome_directory: esphome
     runs-on: ubuntu-latest
-    # cpp lint job runs with esphome-lint docker image so that clang-format-*
-    # doesn't have to be installed
-    container: esphome/esphome-lint:latest
     steps:
       - uses: actions/checkout@v2
-      # Set up the pio project so that the cpp checks know how files are compiled
-      # (build flags, libraries etc)
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.12'
+      - name: Cache pip modules
+        uses: actions/cache@v1
+        with:
+          path: ~/.cache/pip
+          key: esphome-pip-3.12-${{ hashFiles('setup.py') }}
+          restore-keys: |
+            esphome-pip-3.12-
 
       - name: 💣 Clone esphome project
         run: git clone https://github.com/esphome/esphome.git
@@ -39,11 +48,19 @@ jobs:
           git config user.name "ci"
           git config user.email "ci@github.com"
           git add .
-          git commit -a -m "Add xiaomi_ble and xiaomi_ylyk01yl"
+          git commit -a -m "Add external component"
         working-directory: ${{ env.esphome_directory }}
 
+      - name: Add missing requirements
+        run: pip3 install setuptools wheel
+      - name: Set up python environment
+        run: VIRTUAL_ENV=false script/setup
+        working-directory: ${{ env.esphome_directory }}
+
+      # Set up the pio project so that the cpp checks know how files are compiled
+      # (build flags, libraries etc)
       - name: Set up platformio environment
-        run: pio init --ide atom
+        run: pio init --ide vscode
         working-directory: ${{ env.esphome_directory }}
 
       - name: Run clang-format
@@ -58,36 +75,47 @@ jobs:
     env:
       esphome_directory: esphome
     runs-on: ubuntu-latest
-    # cpp lint job runs with esphome-lint docker image so that clang-format-*
-    # doesn't have to be installed
-    container: esphome/esphome-lint:latest
     steps:
       - uses: actions/checkout@v2
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.12'
+      - name: Cache pip modules
+        uses: actions/cache@v1
+        with:
+          path: ~/.cache/pip
+          key: esphome-pip-3.12-${{ hashFiles('setup.py') }}
+          restore-keys: |
+            esphome-pip-3.12-
 
-      - name: 💣 Clone esphome project
+      - name: 💣Clone esphome project
         run: git clone https://github.com/esphome/esphome.git
-      - name: 💣 Copy component into the esphome project
+      - name: 💣Copy component into the esphome project
         run: |
           cp -r ../components/* esphome/components/
           git config user.name "ci"
           git config user.email "ci@github.com"
           git add .
-          git commit -a -m "Add xiaomi_ble and xiaomi_ylyk01yl"
+          git commit -a -m "Add external component"
+        working-directory: ${{ env.esphome_directory }}
+
+      - name: Add missing requirements
+        run: pip3 install setuptools wheel
+      - name: Set up python environment
+        run: VIRTUAL_ENV=false script/setup
         working-directory: ${{ env.esphome_directory }}
 
       # Set up the pio project so that the cpp checks know how files are compiled
       # (build flags, libraries etc)
       - name: Set up platformio environment
-        run: pio init --ide atom
+        run: pio init --ide vscode
         working-directory: ${{ env.esphome_directory }}
 
       - name: Register problem matchers
         run: |
           echo "::add-matcher::.github/workflows/matchers/clang-tidy.json"
           echo "::add-matcher::.github/workflows/matchers/gcc.json"
-      # Can be removed as soon as esphome-lint container is fixed
-      - name: Add missing pexpect
-        run: pip install pexpect
       - name: Run lint-cpp
         run: script/lint-cpp -c
         working-directory: ${{ env.esphome_directory }}
@@ -106,14 +134,14 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
-          python-version: '3.7'
+          python-version: '3.12'
       - name: Cache pip modules
         uses: actions/cache@v1
         with:
           path: ~/.cache/pip
-          key: esphome-pip-3.7-${{ hashFiles('setup.py') }}
+          key: esphome-pip-3.12-${{ hashFiles('setup.py') }}
           restore-keys: |
-            esphome-pip-3.7-
+            esphome-pip-3.12-
 
       - name: 💣Clone esphome project
         run: git clone https://github.com/esphome/esphome.git
@@ -123,11 +151,14 @@ jobs:
           git config user.name "ci"
           git config user.email "ci@github.com"
           git add .
-          git commit -a -m "Add xiaomi_ble and xiaomi_ylyk01yl"
+          git commit -a -m "Add external component"
         working-directory: ${{ env.esphome_directory }}
 
+      - name: Add missing requirements
+        run: pip3 install setuptools wheel
+
       - name: Set up python environment
-        run: script/setup
+        run: VIRTUAL_ENV=false script/setup
         working-directory: ${{ env.esphome_directory }}
 
       - name: Register problem matchers
@@ -148,10 +179,10 @@ jobs:
     steps:
       - name: ⤵️ Check out configuration from GitHub
         uses: actions/checkout@v2
-      - name: Setup Python 3.7
+      - name: Setup Python 3.12
         uses: actions/setup-python@v1
         with:
-          python-version: 3.7
+          python-version: 3.12
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip setuptools wheel
@@ -161,12 +192,10 @@ jobs:
       - name: Write secrets.yaml
         shell: bash
         run: 'echo -e "wifi_ssid: ssid\nwifi_password: password" > secrets.yaml'
-      - run: esphome config yeelight_light_ceil26.yaml
-      - run: esphome config yeelight_light_ceiling10.yaml
-      - run: esphome config yeelight_light_ceiling15.yaml
-      - run: esphome config yeelight_light_ceiling20.yaml
-      - run: esphome config yeelight_light_strip6.yaml
-      - run: esphome config yeerc_ylyk01yl.yaml
+      - run: |
+          for YAML in yee*.yaml; do
+            esphome -s external_components_source components config $YAML >/dev/null
+          done
 
   esphome-compile:
     runs-on: ubuntu-latest
@@ -186,18 +215,16 @@ jobs:
           path: .pioenvs
           key: esphome-compile-pioenvs-${{ hashFiles('*.yaml') }}
           restore-keys: esphome-compile-pioenvs-
-      - name: Set up Python 3.7
+      - name: Set up Python 3.12
         uses: actions/setup-python@v1
         with:
-          python-version: 3.7
+          python-version: 3.12
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip setuptools wheel
           pip install esphome
           pip list
           esphome version
-          # Downgrade cryptography to avoid https://github.com/espressif/esp-idf/issues/7631
-          python -m pip install --upgrade cryptography==3.4.8
       - name: Register problem matchers
         run: |
           echo "::add-matcher::.github/workflows/matchers/gcc.json"
@@ -205,11 +232,6 @@ jobs:
       - name: Write secrets.yaml
         shell: bash
         run: 'echo -e "wifi_ssid: ssid\nwifi_password: password" > secrets.yaml'
-      - run: esphome compile yeelight_light_ceil26.yaml
-      - run: esphome compile yeelight_light_ceiling10.yaml
-      - run: esphome compile yeelight_light_ceiling15.yaml
-      - run: esphome compile yeelight_light_ceiling20.yaml
-      - run: esphome compile yeelight_light_strip6.yaml
-      - run: |
-          sed -i 's#source: github://syssi/esphome-yeelight-ceiling-light@main#source: components#' yeerc_ylyk01yl.yaml
-          esphome yeerc_ylyk01yl.yaml compile
+      # Compile only a few examples as they are all very similar
+      - run: esphome -s external_components_source components compile yeelight_light_lamp9.yaml
+      - run: esphome -s external_components_source components compile yeerc_ylyk01yl.yaml

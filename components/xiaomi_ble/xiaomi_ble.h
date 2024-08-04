@@ -27,6 +27,7 @@ struct XiaomiParseResult {
     TYPE_CGPR1,
     TYPE_YLYK01YL,
     TYPE_YLKG07YL,
+    TYPE_YLYK01YL_FANCL
   } type;
   std::string name;
   optional<int> keycode;

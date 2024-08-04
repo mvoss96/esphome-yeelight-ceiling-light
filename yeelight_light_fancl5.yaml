@@ -1,0 +1,283 @@
+# Yeelight C900 LED Silent Ceiling Fan
+# YLFD002 / YLFD008
+
+substitutions:
+  name: yeelight-light-fancl5
+  external_components_source: github://syssi/esphome-yeelight-ceiling-light@main
+
+esphome:
+  name: ${name}
+  min_version: 2024.6.0
+
+esp32:
+  board: esp32doit-devkit-v1
+  framework:
+    type: esp-idf
+    sdkconfig_options:
+      CONFIG_FREERTOS_UNICORE: y
+    advanced:
+      ignore_efuse_mac_crc: true
+
+external_components:
+  - source: ${external_components_source}
+    refresh: 0s
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+
+ota:
+  platform: esphome
+
+logger:
+  level: DEBUG
+
+api:
+
+globals:
+  - id: step_size
+    type: float
+    # update this for color_temperature and brightness update
+    initial_value: '0.15'
+  - id: speed_step_size
+    type: int
+    initial_value: '10'
+
+uart:
+  baud_rate: 9600
+  rx_pin: GPIO16
+  tx_pin: GPIO17
+  debug:
+    direction: BOTH
+
+fan:
+  - platform: yeelight_fan_controller
+    id: yeelight_ceiling_fan
+    name: "${name} ceiling fan"
+
+output:
+  - platform: ledc
+    pin: GPIO19
+    id: output_warm
+  - platform: ledc
+    pin: GPIO21
+    id: output_cold
+  - platform: ledc
+    pin: GPIO23
+    id: output_nightlight
+
+switch:
+  - platform: gpio
+    pin: GPIO33
+    id: buzzer_beep
+    on_turn_on:
+      - delay: 100ms
+      - switch.turn_off: buzzer_beep
+
+light:
+  - platform: monochromatic
+    name: "${name} night light"
+    id: night_light
+    output: output_nightlight
+    gamma_correct: 0
+    on_turn_on:
+      - light.turn_off: ceiling_light
+  - platform: cwww
+    name: "${name} ceiling light"
+    id: ceiling_light
+    cold_white: output_cold
+    warm_white: output_warm
+    cold_white_color_temperature: 6500 K
+    warm_white_color_temperature: 2700 K
+    constant_brightness: true
+    gamma_correct: 0
+    on_turn_on:
+      - light.turn_off: night_light
+
+esp32_ble_tracker:
+  scan_parameters:
+    duration: 10min
+    active: false
+
+xiaomi_ylyk01yl:
+  # change mac_address here
+  mac_address: "A4:C1:38:6E:85:0B"
+  last_button_pressed:
+    name: "last button pressed"
+
+  # Button                                 Keycode (YLYK01YL Ceiling Fan)
+  # fan toggle                             0
+  # ceiling or night toggle                1
+  # wind speed minus or three level speed  2
+  # color temperature or brightness minus  3
+  # wind speed plus or fan mode toggle     4
+  # color temperature or brightness plus   5
+  on_press:
+    # toggle fan
+    - keycode: 0
+      then:
+        - fan.toggle: yeelight_ceiling_fan
+
+    # toggle ceiling light
+    - keycode: 1
+      then:
+        - light.toggle: ceiling_light
+
+    # speed -
+    - keycode: 2
+      then:
+        - fan.turn_on:
+            id: yeelight_ceiling_fan
+            speed: !lambda |-
+              float speed = id(yeelight_ceiling_fan).speed - id(speed_step_size);
+              if(speed <= 100 && speed >= 1)
+                return speed;
+              else
+                return 1;
+
+    # brightness and color_temperature control (value: 0.01-1f)
+    # color_temperature only support ceiling light，using step_size to userdefined update
+    # ceiling light and night light brightness minus
+    - keycode: 3
+      then:
+        - if:
+            condition:
+              light.is_on: ceiling_light
+            then:
+              - light.turn_on:
+                  id: ceiling_light
+                  brightness: !lambda |-
+                    float brightness = id(ceiling_light).remote_values.get_brightness() - id(step_size);
+                    if(brightness > 0.05f)
+                      return brightness;
+                    else
+                      return 0.05f;
+        - if:
+            condition:
+              light.is_on: night_light
+            then:
+              - light.turn_on:
+                  id: night_light
+                  brightness: !lambda |-
+                    float brightness = id(night_light).remote_values.get_brightness() - id(step_size);
+                    if(brightness > 0.05f)
+                      return brightness;
+                    else
+                      return 0.05f;
+
+    # speed +
+    - keycode: 4
+      then:
+        - fan.turn_on:
+            id: yeelight_ceiling_fan
+            speed: !lambda |-
+              float speed = id(yeelight_ceiling_fan).speed + id(speed_step_size);
+              if(speed <= 100 && speed >= 1)
+                return speed;
+              else
+                return 100;
+
+    # ceiling light and night light brightness plus
+    - keycode: 5
+      then:
+        - if:
+            condition:
+              light.is_on: ceiling_light
+            then:
+              - light.turn_on:
+                  id: ceiling_light
+                  brightness: !lambda |-
+                    float brightness = id(ceiling_light).remote_values.get_brightness() + id(step_size);
+                    if(brightness < 1.0f)
+                      return brightness;
+                    else
+                      return 1.0f;
+
+        - if:
+            condition:
+              light.is_on: night_light
+            then:
+              - light.turn_on:
+                  id: night_light
+                  brightness: !lambda |-
+                    float brightness = id(night_light).remote_values.get_brightness() + id(step_size);
+                    if(brightness < 1.0f)
+                      return brightness;
+                    else
+                      return 1.0f;
+
+    # Trigger on any keycode
+    - then:
+        - switch.turn_on: buzzer_beep
+        - logger.log:
+            format: 'Button with keycode %d pressed'
+            args: ['int(keycode)']
+
+  on_long_press:
+    # night light
+    - keycode: 1
+      then:
+        - light.toggle: night_light
+
+    # stepless cycle control
+    - keycode: 2
+      then:
+        - fan.turn_on:
+            id: yeelight_ceiling_fan
+            speed: !lambda |-
+              float speed = id(yeelight_ceiling_fan).speed + 20.0f;
+              if(speed <= 100 && speed >= 1)
+                return speed;
+              else
+                return 1;
+
+    # fan mode toggle, standard winds cycle winds
+    - keycode: 4
+      then:
+        - fan.turn_on:
+            id: yeelight_ceiling_fan
+            direction: !lambda |-
+              fan::FanDirection direction = id(yeelight_ceiling_fan).direction;
+              if(direction == fan::FanDirection::REVERSE)
+                return fan::FanDirection::FORWARD;
+              else
+                return fan::FanDirection::REVERSE;
+    # color_temperature control，only support by ceiling light (154K-370K)
+    # color_temperature minus
+    - keycode: 3
+      then:
+        - if:
+            condition:
+              light.is_on: ceiling_light
+            then:
+              - light.turn_on:
+                  id: ceiling_light
+                  color_mode: COLD_WARM_WHITE
+                  color_temperature: !lambda |-
+                    float color_temperature = id(ceiling_light).remote_values.get_color_temperature() * (1 + id(step_size));
+                    if(color_temperature < 370.0f)
+                      return color_temperature;
+                    else
+                      return 370;
+    # color_temperature plus
+    - keycode: 5
+      then:
+        - if:
+            condition:
+              light.is_on: ceiling_light
+            then:
+              - light.turn_on:
+                  id: ceiling_light
+                  color_mode: COLD_WARM_WHITE
+                  color_temperature: !lambda |-
+                    float color_temperature = id(ceiling_light).remote_values.get_color_temperature() * (1 - id(step_size));
+                    if(color_temperature > 154.0f)
+                      return color_temperature;
+                    else
+                      return 154;
+
+    - then:
+        - switch.turn_on: buzzer_beep
+        - logger.log:
+            format: 'Button with keycode %d long pressed'
+            args: ['int(keycode)']

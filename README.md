@@ -10,7 +10,7 @@ Esphome custom firmware for some Yeelight Ceiling Lights.
 
 ## Requirements
 
-* [ESPHome 2021.10.0 or higher](https://github.com/esphome/esphome/releases).
+* [ESPHome 2024.6.0 or higher](https://github.com/esphome/esphome/releases).
 * TTL-to-USB module (FTDI/CH430/PL2303) and some wires to flash the device once
 
 ## Supported devices
@@ -19,16 +19,26 @@ Esphome custom firmware for some Yeelight Ceiling Lights.
 | ------------------------------------------------ | ------------------------- | ----------- | --------------------------------------- |
 | Yeelight Ceiling Light YLXD76YL                  | yeelink.light.ceil26      | YLXD76YL    | AC220V, 23W, 1500lm, 2700K-6500K, 32cm  |
 | Yeelight XianYu C2001C550                        | yeelink.light.ceil26      | C2001C550   | AC220V, 50W, 2700K-6500K, 55.5cm        |
-| Yeelight XianYu C2001C450 (untested!)            | yeelink.light.ceil26(?)   | C2001C450   | AC220V, 50W, 2700K-6500K, 45.5cm        |
+| Yeelight XianYu C2001C450                        | yeelink.light.ceil26      | C2001C450   | AC220V, 50W, 2700K-6500K, 45.5cm        |
 | Yeelight XianYu C2001S500 (untested!)            | yeelink.light.ceil26(?)   | C2001S500   | AC220V, 50W, 2700K-6500K, 50.5x50.5cm   |
 | Yeelight 1S YLDD05Y Lightstrip                   | yeelink.light.strip6      | YLDD05Y     | AC220V, 50W, RGB                        |
 | Yeelight Meteorite Ceiling Light                 | yeelink.light.ceiling10   | YLDL01YL    | AC220V, 33W, 2700K-6500K, 7W RGB ambient light, 90x7x4 cm  |
 | Yeelight Ceiling Light YLXD42YL                  | yeelink.light.ceiling15   | YLXD42YL    | AC220V, 32W, 2200lm, 2700K-6500K, 48cm  |
-| Yeelight Ceiling Light YLXD41YL                  | yeelink.light.ceilingUNKNOWN  | YLXD41YL    | AC220V, 28W, 1800lm, 2700K-6500K, 32cm  |
+| Yeelight Ceiling Light YLXD41YL                  | yeelink.light.ceiling11   | YLXD41YL    | AC220V, 28W, 1800lm, 2700K-6500K, 32cm  |
 | Yeelight Staria Bedside LED                      | yeelink.light.lamp9       | YLCT02YL    | AC220V, 20W, 350lm, 2700K-6500K, without charger |
-| Yeelight Staria Pro Bedside LED                  | yeelink.light.lampUNKNOWN | YLCT03YL    | AC220V, 20W, 350lm, 2700K-6500K, Qi charger      |
-| Mi Smart LED Ceiling Light                       | yeelink.light.ceiling22   | MJXDD01     | AC220V, 45W, 3100lm, 2700K-6000K, 45cm    |
+| Yeelight Staria Pro Bedside LED                  | yeelink.light.lamp9       | YLCT03YL    | AC220V, 20W, 350lm, 2700K-6500K, Qi charger      |
+| Mi Smart LED Ceiling Light                       | yeelink.light.ceiling22   | MJXDD001 / MJXDD01SYL     | AC220V, 45W, 3100lm, 2700K-6000K, 45cm    |
 | Yeelight Ceiling Light YLXD50YL                  | yeelink.light.ceiling20   | YLXD50YL    | AC220V, 50W, 3100lm, 2700K-6500K, RGB ambient light, 47cm  |
+| Yeelight Arwen 450C                              | yeelight.light.ceilc      | YLXD013-B   | AC220V, 50W, 4000lm, 2700K-6500K, RGB ambient light, 50cm  |
+| Yeelight Arwen 450S                              | yeelight.light.ceilc      | YLXD013     | AC220V, 50W, 3000lm, 2700K-6500K, RGB ambient light, 45cm  |
+| [Yeelight Arwen 550C](https://github.com/syssi/esphome-yeelight-ceiling-light/issues/22)  | yeelight.light.ceilc      | YLXD013-C   | AC220V, 50W, 4500lm, 2700K-6500K, RGB ambient light, 60cm  |
+| [Yeelight Arwen 550S](https://github.com/syssi/esphome-yeelight-ceiling-light/issues/22)  | yeelight.light.ceilb      | YLXD013-A   | AC220V, 50W, 3500lm, 2700K-6500K, RGB ambient light, 55cm  |
+| Yeelight Arwen A2001 450                         | yeelight.light.ceil29     | YLXD032     | AC220V, 50W, 4500lm, 2700K-6500K, 50cm  |
+| Yeelight Arwen A2001 550                         | yeelight.light.ceil29     | YLXD031     | AC220V, 50W, 4800lm, 2700K-6500K, 60cm  |
+| Yeelight Ceiling Light 235C                      | yeelight.light.ceil20     | YLXDD-0030  | AC220V, 18W, 1200lm, 2700K-6500K, RGB ambient light |
+| Yeelight Ceiling Light 300C                      | yeelight.light.ceil20     | YLXDD-0033  | AC220V, 21W, 1600lm, 2700K-6500K, RGB ambient light |
+| Yeelight Ceiling Light 400C                      | yeelight.light.ceil20     | YLXDD-0034  | AC220V, 24W, 2000lm, 2700K-6500K, RGB ambient light |
+| Yeelight Jiaoyue 260 Ceiling Light               | yeelight.light.ceiling24  | YLXD62YI    | AC220V, 10W, 670LM, 2700K-6500K, 26cm |
 
 ### More esphome + yeelight projects
 
@@ -53,7 +63,7 @@ Esphome custom firmware for some Yeelight Ceiling Lights.
 - Sensor
   - Power supply voltage (ESP32 VCC)
 
-### yeelink.light.ceiling10, yeelink.light.ceiling20
+### yeelink.light.ceiling10, yeelink.light.ceiling20, yeelight.light.ceilb, yeelight.light.ceilc
 
 - Light (CCWW)
   - Brightness
@@ -67,7 +77,18 @@ Esphome custom firmware for some Yeelight Ceiling Lights.
   - ADC1
   - ADC2
 
-### yeelink.light.ceiling15, yeelink.light.ceilingUNKNOWN
+### yeelight.light.ceil29
+
+- Light (CCWW)
+  - Brightness
+  - Color temperature (2700K-6500K)
+- Nightlight (2700K)
+  - Brightness
+- Sensor
+  - ADC1
+  - ADC2
+
+### yeelink.light.ceiling15, yeelink.light.ceiling11
 
 - Light (CCWW)
   - Brightness
@@ -92,6 +113,16 @@ Esphome custom firmware for some Yeelight Ceiling Lights.
 - Light strip (RGB)
   - Brightness
   - Color
+ 
+### yeelink.light.ceiling24
+
+- Light (CCWW)
+  - Brightness
+  - Color temperature (2700K-6500K)
+- Sensor
+  - ADC1
+  - ADC2
+
 
 ## Known bugs
 
@@ -176,11 +207,11 @@ WARNING Decoded 0x4008e535: vPortTaskWrapper at /home/paul/src/esp32-arduino-lib
 | Night light PWM     | NL     | GPIO23       |                       |
 | Power supply GPIO   | STB    | GPIO23       |                       |
 | VCC measurement     | ADC1   | GPIO35       |                       |
-| TXD                 |        | GPIO1        |                       |
-| RXD                 |        | GPIO3        |                       |
+| TXD                 | TP5    | GPIO1        |                       |
+| RXD                 | TP4    | GPIO3        |                       |
 | GPIO0               | TP3    | GPIO0        |                       |
-| GND                 |        | PIN1         |                       |
-| 3V3                 |        | PIN2         |                       |
+| GND                 | TP2    | PIN1         |                       |
+| 3V3                 | TP1    | PIN2         |                       |
 
 
 ```
@@ -210,6 +241,11 @@ Please use 3V3 and GND of the pin header to power the daugther board / the ESP32
 | RXD                 | RX     | GPIO3        |                       |
 | GPIO0               | IO0    | GPIO0        |                       |
 
+The ESP32 will enter the serial bootloader when GPIO0 (test point IO0 at the back) is held low (GND) on reset / power.
+
+### yeelink.light.ceiling11
+
+see [Yeelight Ceiling Light YLXD41YL](https://github.com/jaddel/ESPHome-Configurations/tree/master/Devices/Ceiling%20Yeelight%20YLXD41YL)
 The ESP32 will enter the serial bootloader when GPIO0 (test point IO0 at the back) is held low (GND) on reset / power.
 
 
@@ -250,6 +286,7 @@ The ESP32 will enter the serial bootloader when GPIO0 (test point TP1 at the bac
 | Cold white PWM      | C      | GPIO21       | 20% - 88% duty cycle  |
 | Night light PWM     | NL     | GPIO23       | 10% - 100% duty cycle |
 | VCC measurement     | ADC1   | GPIO36       |                       |
+| Power supply GPIO   | STA    | GPIO22       |             3.3V / 0V |
 | 3.3V                | TP1    |              |                       |
 | GND                 | TP2    |              |                       |
 | GPIO0               | TP3    | GPIO0        |                       |
@@ -267,7 +304,7 @@ The ESP32 will enter the serial bootloader when GPIO0 (test point TP3 at the bac
 | Red PWM             | R      | GPIO33       |                       |
 | Green PWM           | G      | GPIO26       |                       |
 | Blue PWM            | B      | GPIO27       |                       |
-| Night Light PWM     | NC     | GPIO22       |                       |
+| Night Light PWM     | NC     | GPIO23       |                       |
 | Power supply GPIO   | STA    | GPIO22       |             3.3V / 0V |
 | Cold white PWM      | C      | GPIO21       |                 3.16V |
 | Warm white PWM      | W      | GPIO19       |                 1.58V |
@@ -295,6 +332,22 @@ The ESP32 will enter the serial bootloader when GPIO0 (test point IO0 at the bac
 | LED (YLCT03YL only) |                 | GPIO33       |                       |
 | 3.3V                | +, TP7          | 3.3V         |                       |
 | GND                 | -, TP8          | GND          |                       |
+
+### yeelink.light.ceiling24
+
+| Name                | Label  | ESP32 GPIO   | Stock firmware limits |
+| ------------------- | ------ | ------------ |-----------------------|
+| Warm white PWM      |        | GPIO19       |                       |
+| Cold white PWM      |        | GPIO21       |                       |
+| VCC measurement     |        | GPIO36       |                       |
+| VCC measurement     |        | GPIO32       |                       |
+| TXD                 | TXD    | GPIO1        |                       |
+| RXD                 | RXD    | GPIO3        |                       |
+| GPIO0               | IO0    | GPIO0        |                       |
+| 3.3V                | 3.3V   | 3.3V         |                       |
+| GND                 | GND    | GND          |                       |
+
+The ESP32 will enter the serial bootloader when GPIO0 (IO0 pad) is held low (GND) on reset / power.
 
 
 ## Disassembly
@@ -557,3 +610,88 @@ The test points are in the back of the ESP's PCB.
 <a href="https://raw.githubusercontent.com/syssi/esphome-yeelight-ceiling-light/main/images/ylxd50yl/006.jpg" target="_blank">
 <img src="https://raw.githubusercontent.com/syssi/esphome-yeelight-ceiling-light/main/images/ylxd50yl/thumbnails/006.jpg" width="18%">
 </a>
+
+### MJXDD01SYL
+The disassembly process is almost, if not exactly the same, as with YLXD50YL. MJXDD01SYL seems a re-labled YLXD50YL.
+
+Rotate the cover counterclockwise to remove the cover. Now you can see the outside of the board's housing.
+Unscrew the screws and unplug the two connectors. Now you can detach the housing from the base.
+On the back of the housing you need to remove the cover. Now you can take out the PCB from the housing.
+Unplug the ESP32 from the socket. Maybe you need to remove a bit of the glue between the PCM and the ESP32.
+
+The Test Points (TP) are on the back side of the ESP32 module. The font is very small, maybe you need a magnifying glass.
+
+To solder some wires to the TPs you need a bit of experience. Since other components are located very close to the TPs.
+
+<a href="https://raw.githubusercontent.com/syssi/esphome-yeelight-ceiling-light/main/images/mjxdd01syl/001.jpg" target="_blank">
+<img src="https://raw.githubusercontent.com/syssi/esphome-yeelight-ceiling-light/main/images/mjxdd01syl/thumbnails/001.jpg" width="18%">
+</a>
+
+<a href="https://raw.githubusercontent.com/syssi/esphome-yeelight-ceiling-light/main/images/mjxdd01syl/002.jpg" target="_blank">
+<img src="https://raw.githubusercontent.com/syssi/esphome-yeelight-ceiling-light/main/images/mjxdd01syl/thumbnails/002.jpg" width="18%">
+</a>
+
+<a href="https://raw.githubusercontent.com/syssi/esphome-yeelight-ceiling-light/main/images/mjxdd01syl/003.jpg" target="_blank">
+<img src="https://raw.githubusercontent.com/syssi/esphome-yeelight-ceiling-light/main/images/mjxdd01syl/thumbnails/003.jpg" width="18%">
+</a>
+
+<a href="https://raw.githubusercontent.com/syssi/esphome-yeelight-ceiling-light/main/images/mjxdd01syl/004.jpg" target="_blank">
+<img src="https://raw.githubusercontent.com/syssi/esphome-yeelight-ceiling-light/main/images/mjxdd01syl/thumbnails/004.jpg" width="18%">
+</a>
+
+<a href="https://raw.githubusercontent.com/syssi/esphome-yeelight-ceiling-light/main/images/mjxdd01syl/005.jpg" target="_blank">
+<img src="https://raw.githubusercontent.com/syssi/esphome-yeelight-ceiling-light/main/images/mjxdd01syl/thumbnails/005.jpg" width="18%">
+</a>
+
+<a href="https://raw.githubusercontent.com/syssi/esphome-yeelight-ceiling-light/main/images/mjxdd01syl/006.jpg" target="_blank">
+<img src="https://raw.githubusercontent.com/syssi/esphome-yeelight-ceiling-light/main/images/mjxdd01syl/thumbnails/006.jpg" width="18%">
+</a>
+
+<a href="https://raw.githubusercontent.com/syssi/esphome-yeelight-ceiling-light/main/images/mjxdd01syl/007.jpg" target="_blank">
+<img src="https://raw.githubusercontent.com/syssi/esphome-yeelight-ceiling-light/main/images/mjxdd01syl/thumbnails/007.jpg" width="18%">
+</a>
+
+### YLXDD-0033
+To disasemble the unit, use a prying tool to un-clip the top part. There are no screws nor glue, only clips all around the ceiling light.
+
+When flashing the YLXDD-00xx series you'll need an external 3.3V power supply and pull the enable (EN) pin to 3.3V.
+
+<a href="https://raw.githubusercontent.com/syssi/esphome-yeelight-ceiling-light/main/images/ylxdd0033/001.webp" target="_blank">
+<img src="https://raw.githubusercontent.com/syssi/esphome-yeelight-ceiling-light/main/images/ylxdd0033/thumbnails/001.webp" width="18%">
+</a>
+
+<a href="https://raw.githubusercontent.com/syssi/esphome-yeelight-ceiling-light/main/images/ylxdd0033/002.webp" target="_blank">
+<img src="https://raw.githubusercontent.com/syssi/esphome-yeelight-ceiling-light/main/images/ylxdd0033/thumbnails/002.webp" width="18%">
+</a>
+
+<a href="https://raw.githubusercontent.com/syssi/esphome-yeelight-ceiling-light/main/images/ylxdd0033/003.webp" target="_blank">
+<img src="https://raw.githubusercontent.com/syssi/esphome-yeelight-ceiling-light/main/images/ylxdd0033/thumbnails/003.webp" width="18%">
+</a>
+
+<a href="https://raw.githubusercontent.com/syssi/esphome-yeelight-ceiling-light/main/images/ylxdd0033/004.webp" target="_blank">
+<img src="https://raw.githubusercontent.com/syssi/esphome-yeelight-ceiling-light/main/images/ylxdd0033/thumbnails/004.webp" width="18%">
+</a>
+
+### YLXD62YI
+Rotate the cover counterclockwise to remove the cover. Unscrew the 220VAC L and N Wires. Remove three screws on the transparent diffusor.
+Now the PCB is completely exposed and unmounted from the base. 
+3.3V, GND, TXD, RXD and IO0 Pads are clearly visible on the main PCB near ESP32 board.
+To flash ESP32 you need to solder the wires onto that test points.
+
+
+<a href="https://raw.githubusercontent.com/justr0st/esphome-yeelight-ceiling-light/main/images/ylxd62yi/001.jpg" target="_blank">
+<img src="https://raw.githubusercontent.com/justr0st/esphome-yeelight-ceiling-light/main/images/ylxd62yi/thumbnails/001.jpg" width="18%">
+</a>
+
+<a href="https://raw.githubusercontent.com/justr0st/esphome-yeelight-ceiling-light/main/images/ylxd62yi/002.jpg" target="_blank">
+<img src="https://raw.githubusercontent.com/justr0st/esphome-yeelight-ceiling-light/main/images/ylxd62yi/thumbnails/002.jpg" width="18%">
+</a>
+
+<a href="https://raw.githubusercontent.com/justr0st/esphome-yeelight-ceiling-light/main/images/ylxd62yi/003.jpg" target="_blank">
+<img src="https://raw.githubusercontent.com/justr0st/esphome-yeelight-ceiling-light/main/images/ylxd62yi/thumbnails/003.jpg" width="18%">
+</a>
+
+<a href="https://raw.githubusercontent.com/justr0st/esphome-yeelight-ceiling-light/main/images/ylxd62yi/004.jpg" target="_blank">
+<img src="https://raw.githubusercontent.com/justr0st/esphome-yeelight-ceiling-light/main/images/ylxd62yi/thumbnails/004.jpg" width="18%">
+</a>
+

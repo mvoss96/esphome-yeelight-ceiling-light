@@ -1,5 +1,9 @@
+# merged configuration of:
+# - https://github.com/syssi/esphome-yeelight-ceiling-light/blob/main/yeelight_light_ceiling15.yaml
+# - https://github.com/jaddel/ESPHome-Configurations/blob/master/Devices/Ceiling%20Yeelight%20YLXD41YL/ceiling_yeelight_ylxd41xl.yaml
+
 substitutions:
-  name: yeelight-light-ceil26
+  name: yeelight-light-ceiling11
 
 esphome:
   name: ${name}
@@ -28,48 +32,44 @@ api:
 
 sensor:
   - platform: adc
-    pin: GPIO35
-    name: "${name} power supply"
+    pin: GPIO36
+    name: "${name} adc1"
+    attenuation: 12db
+  - platform: adc
+    pin: GPIO32
+    name: "${name} adc2"
     attenuation: 12db
 
 output:
   - platform: ledc
     pin: GPIO19
     id: output_warm
-    power_supply: power
-    # limit of the stock firmware (1.5V)
-    max_power: 0.50
+    frequency: 4882Hz
   - platform: ledc
     pin: GPIO21
     id: output_cold
-    power_supply: power
+    frequency: 4882Hz
   - platform: ledc
     pin: GPIO23
     id: output_nightlight
-    power_supply: power
-
-power_supply:
-  - id: power
-    pin: GPIO22
-    enable_time: 0s
-    keep_on_time: 2s
+    frequency: 19531Hz
 
 light:
   - platform: monochromatic
-    name: "${name} night light"
+    name: "${name}-nightlight"
     id: night_light
     output: output_nightlight
-    gamma_correct: 0
+    gamma_correct: 0.7
     on_turn_on:
       - light.turn_off: ceiling_light
   - platform: cwww
-    name: "${name} ceiling light"
+    name: "${name}"
     id: ceiling_light
     cold_white: output_cold
     warm_white: output_warm
     cold_white_color_temperature: 6500 K
     warm_white_color_temperature: 2700 K
     constant_brightness: true
-    gamma_correct: 0
+    gamma_correct: 0.4
     on_turn_on:
       - light.turn_off: night_light
